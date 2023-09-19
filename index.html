@@ -1086,6 +1086,7 @@ canvas.addEventListener("touchend", () => {
   
   // 画像要素とコンテナ要素の取得
   const image = document.getElementById('overlay');
+  
   const container = document.getElementById('video-container');
   
   // タッチ開始時のイベントリスナー
@@ -1137,11 +1138,13 @@ canvas.addEventListener("touchend", () => {
 </script>
 
 <script>
+  
   let pinchStartDistance = 0;
 let currentScale = 1;
 
+
 // タッチ開始時のイベントリスナー
-overlay.addEventListener('touchstart', (e) => {
+image.addEventListener('touchstart', (e) => {
   if (e.touches.length === 2) {
     const touch1 = e.touches[0];
     const touch2 = e.touches[1];
@@ -1153,7 +1156,7 @@ overlay.addEventListener('touchstart', (e) => {
 });
 
 // タッチ移動時のイベントリスナー
-overlay.addEventListener('touchmove', (e) => {
+image.addEventListener('touchmove', (e) => {
   if (e.touches.length === 2) {
     const touch1 = e.touches[0];
     const touch2 = e.touches[1];
@@ -1166,11 +1169,12 @@ overlay.addEventListener('touchmove', (e) => {
     currentScale *= scaleFactor;
 
     // 画像の拡大縮小
-    overlay.style.transform = `scale(${currentScale}) translate(-50%, -50%)`;
+    image.style.transform = `scale(${currentScale}) translate(-50%, -50%)`;
 
     pinchStartDistance = pinchCurrentDistance;
   }
 });
+
 
   </script>
 </body>
