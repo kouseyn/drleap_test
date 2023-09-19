@@ -1063,15 +1063,70 @@ canvas.addEventListener("touchend", () => {
   // タッチイベントの初期位置
   let touchStartX = 0;
   let touchStartY = 0;
+  
+  // 画像の初期位置
+  let imageX = 0;
+  let imageY = 0;
+  
+  // 画像要素とコンテナ要素の取得
+  const image = document.getElementById('overlay');
+  const container = document.getElementById('video-container');
+  
+  // タッチ開始時のイベントリスナー
+  container.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  });
+  
+  // タッチ移動時のイベントリスナー
+  container.addEventListener('touchmove', (e) => {
+    if (!touchStartX || !touchStartY) return;
+  
+    const touchEndX = e.touches[0].clientX;
+    const touchEndY = e.touches[0].clientY;
+  
+    // X軸方向の移動量を計算
+    const deltaX = touchEndX - touchStartX;
+    // Y軸方向の移動量を計算
+    const deltaY = touchEndY - touchStartY;
+  
+    // 画像の新しい位置を計算
+    imageX += deltaX;
+    imageY += deltaY;
+  
+    // 画像の移動範囲を制限する場合、ここで制限処理を追加できます
+  
+    // 画像を新しい位置に移動
+    image.style.transform = `translate(${imageX}px, ${imageY}px)`;
+  
+    // タッチ開始位置を更新
+    touchStartX = touchEndX;
+    touchStartY = touchEndY;
+  });
+  
+  // タッチ終了時のイベントリスナー
+  container.addEventListener('touchend', () => {
+    // タッチ終了時には初期化
+    touchStartX = 0;
+    touchStartY = 0;
+  });
+</script>
+
+<script>
+  // ボタンがクリックされたらリダイレクトする関数
+  document.getElementById("camera-toggle").addEventListener("click", function() {
+      // demo/index.html にリダイレクト
+      window.location.href = "gallery.html";
+  });
+</script>
+<script>
+
 
   // 画像の初期サイズ
   let imageWidth = 100; // 画像の初期幅
   let imageHeight = 100; // 画像の初期高さ
-  let currentScale = 1.0; // 初期拡大率
 
 
-  // 画像要素の取得
-  const image = document.getElementById('overlay');
 
   // タッチ開始時のイベントリスナー
   image.addEventListener('touchstart', (e) => {
@@ -1086,57 +1141,37 @@ canvas.addEventListener("touchend", () => {
   });
 
   // タッチ移動時のイベントリスナー
-  image.addEventListener('touchmove', (e) => {
-    if (e.touches.length === 2) {
-      // ピンチアウトのジェスチャーを処理
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+image.addEventListener('touchmove', (e) => {
+  if (e.touches.length === 2) {
+    // ピンチアウトのジェスチャーを処理
+    const touch1 = e.touches[0];
+    const touch2 = e.touches[1];
+    const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
 
-      // ジェスチャーの変化に応じて画像のサイズを変更
-      const scaleFactor = distance / touchStartX; // ピンチアウトのスケールファクター
-      imageWidth *= scaleFactor;
-      imageHeight *= scaleFactor;
+    // ジェスチャーの変化に応じて画像のサイズを変更
+    const scaleFactor = distance / touchStartX; // ピンチアウトのスケールファクター
+    const newWidth = imageWidth * scaleFactor;
+    const newHeight = imageHeight * scaleFactor;
 
-      // 画像の新しいサイズを設定
-      image.style.width = imageWidth + 'px';
-      image.style.height = imageHeight + 'px';
+    // 画像の新しいサイズを設定
+    image.style.width = newWidth + 'px';
+    image.style.height = newHeight + 'px';
 
-      // タッチ開始位置を更新
-      touchStartX = distance;
-      touchStartY = distance;
+    // タッチ開始位置を更新
+    touchStartX = distance;
+    touchStartY = distance;
 
-      // デフォルトのスクロール挙動を防ぐ
-      e.preventDefault();
-    }
-  });
+    // デフォルトのスクロール挙動を防ぐ
+    e.preventDefault();
+  }
+});
+
 
   // タッチ終了時のイベントリスナー
   image.addEventListener('touchend', () => {
     // タッチ終了時には初期化
     touchStartX = 0;
     touchStartY = 0;
-    // マウスホイールイベントの処理
-function handleMouseWheel(event) {
-  const delta = Math.sign(event.deltaY);
-  const scaleFactor = 0.1;
-
-  if (delta > 0) {
-    currentScale -= scaleFactor;
-  } else if (delta < 0) {
-    currentScale += scaleFactor;
-  }
-
-  // 最小拡大率と最大拡大率を設定（必要に応じて調整）
-  const minScale = 0.5; // 最小拡大率
-  const maxScale = 2.0; // 最大拡大率
-
-  // 拡大率を制限
-  currentScale = Math.max(minScale, Math.min(maxScale, currentScale));
-
-  // 画像のスタイルを更新
-  overlay.style.transform = `scale(${currentScale}) translate(-50%, -50%)`;
-}
   });
 </script>
 
