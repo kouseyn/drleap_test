@@ -1067,6 +1067,8 @@ canvas.addEventListener("touchend", () => {
   // 画像の初期サイズ
   let imageWidth = 100; // 画像の初期幅
   let imageHeight = 100; // 画像の初期高さ
+  let currentScale = 1.0; // 初期拡大率
+
 
   // 画像要素の取得
   const image = document.getElementById('overlay');
@@ -1114,6 +1116,27 @@ canvas.addEventListener("touchend", () => {
     // タッチ終了時には初期化
     touchStartX = 0;
     touchStartY = 0;
+    // マウスホイールイベントの処理
+function handleMouseWheel(event) {
+  const delta = Math.sign(event.deltaY);
+  const scaleFactor = 0.1;
+
+  if (delta > 0) {
+    currentScale -= scaleFactor;
+  } else if (delta < 0) {
+    currentScale += scaleFactor;
+  }
+
+  // 最小拡大率と最大拡大率を設定（必要に応じて調整）
+  const minScale = 0.5; // 最小拡大率
+  const maxScale = 2.0; // 最大拡大率
+
+  // 拡大率を制限
+  currentScale = Math.max(minScale, Math.min(maxScale, currentScale));
+
+  // 画像のスタイルを更新
+  overlay.style.transform = `scale(${currentScale}) translate(-50%, -50%)`;
+}
   });
 </script>
 
